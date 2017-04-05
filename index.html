@@ -1,0 +1,524 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Built by Patrick Bell! -->
+
+        <title>Patrick's APES Review Project</title>
+        <link rel="shortcut icon" type="image/png" href="./favicon.png" />
+
+        <!-- CSS resources -->
+        <link rel="stylesheet" href="http://bootswatch.com/darkly/bootstrap.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" crossorigin="anonymous">
+        <!-- end CSS resources -->
+
+        <!-- JS resources -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.6/angular-animate.min.js"></script>
+        
+        <style>
+            video#bgvid { 
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                min-width: 100%;
+                min-height: 100%;
+                width: auto;
+                height: auto;
+                z-index: -100;
+                -ms-transform: translateX(-50%) translateY(-50%);
+                -moz-transform: translateX(-50%) translateY(-50%);
+                -webkit-transform: translateX(-50%) translateY(-50%);
+                transform: translateX(-50%) translateY(-50%);
+                /*background: url(images/The-Kayak.jpg) no-repeat;*/
+                background-size: cover; 
+            }
+
+            .ng-hide-add {
+                -webkit-animation:0s lightSpeedOut ease;
+                animation:0s lightSpeedOut ease;
+            }
+            /* when showing the thing */
+            .ng-hide-remove      {
+                -webkit-animation:.8s lightSpeedIn ease;
+                animation:.8s lightSpeedIn ease;
+            }
+            @-webkit-keyframes lightSpeedOut {
+            0% {
+                opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+            @keyframes lightSpeedOut {
+                0% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+            @-webkit-keyframes lightSpeedIn {
+            0% {
+                opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+            @keyframes lightSpeedIn {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            .centered {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%);
+            }
+
+            .panel {
+                background-color: rgba(48, 48, 48, 0.88) !important;
+            }
+
+            body {
+                font-size: 17px;
+            }
+
+            .back-button {
+                position:absolute;
+                bottom:0;
+                right:0;
+                margin-right: 16px;
+                margin-bottom: 16px;
+            }
+
+            .video-button {
+                position:absolute;
+                bottom:0;
+                left:0;
+                margin-left: 16px;
+                margin-bottom: 16px;
+            }
+        </style>
+        <script>
+            var apesApp = angular.module("apesApp", ["ngAnimate"]);
+
+            apesApp.config(function($sceProvider) {
+                $sceProvider.enabled(false);
+            });
+
+            apesApp.controller("Controller", ["$scope", function($scope) {
+                function loadVideos() {
+                    if (!$scope.playingVideos) {
+                        return;
+                    }
+                    $("video").each(function () {
+                        $(this).get(0).load();
+                        $(this).get(0).addEventListener("canplaythrough", function () {
+                            this.play();
+                        });
+                    });
+                }
+
+                function stopVideos() {
+                    $("video").each(function () {
+                        this.pause();
+                    });
+                }
+
+                function startVideos() {
+                    $("video").each(function () {
+                        this.play();
+                    });
+                }
+                $scope.topics = [
+                    {
+                        id: 1,
+                        moniker: "Abiotic Factors of the Environment",
+                        content: "Earth and all of its environmental processes impact our lives daily, and we utilize different abiotic (non-living) resources in the Earth all the time. Click the topics below to learn about some of these abiotic factors of the environment!",
+                        subcategories: [
+                            {
+                                name: "Climate",
+                                media: "Sunset-Lapse",
+                                content: `
+                                <p><b>Climate</b> : the temperature and percipitation in an area over a long period of time.</p>
+                                <p><b>Weather</b> : conditions of temperature, percipitation, and wind over short periods of time.</p>
+                                <p>The three main classifiers for climates are <b>tropical</b>, <b>polar</b>, and <b>temperate</b>.</p>
+                                <ul>
+                                    <li>Tropical climates are near the equator, around 0-20 degrees latitude (N/S)</li>
+                                    <li>Polar climates are near the poles, around 60-90 degrees latitude (N/S)</li>
+                                    <li>Temperate climates lie somewhere in the middle, typically around 20-60 degrees latitude (N/S)</li>
+                                </ul>
+                                <p>Seasons are greatly affected by climate, with some having more extreme variance in the seasons than others.</p>
+                                `
+                            }, 
+                            {
+                                name: "Water",
+                                media: "Infinity",
+                                content: `
+                                <p><b>Water</b> is all around us - it fills our oceans, we drink it every day, and it is a major part of every ecosystem on Earth! Where does it come from?</p>
+                                <p><b>Open ocean</b> makes up 97.2% of the world's water (salt water).</p>
+                                <p><b>Glaciers</b> hold 2.15% of the world's water (fresh water).</p>
+                                <p><b>Groundwater, rivers, and lakes</b> make up the remaining ~1% (fresh water).</p>
+                                <p>Water cycles through ecosystems through a process of transpiration, evaporation, condensation, and percipitation.</p>
+                                <ul>
+                                    <li><b>Transpiration</b> is the process of moisture being carried through plants.</li>
+                                    <li><b>Evaporation</b> is the process of water turning into a gaseous state and rising into the atmosphere.</li>
+                                    <li><b>Condensation</b> is the collection of gaseous water, forming clouds.</li>
+                                    <li><b>Percipitation</b> is the release of water from clouds back onto Earth.</li>
+                                </ul>
+                                <p>Water is a major part of our human processes. We use water for industrial, personal, and agricultural applications.</p>
+                                <p><b>Agricultural water use</b> makes up about 70% of total water consumption.</p>
+                                <p><b>Industrial water use</b> makes up about 20% of total water consumption.</p>
+                                <p><b>Personal water use</b> makes up the remaining 10% of total water consumption.</p>
+                                <p>Because of the <b>massive</b> amount of water necessary for agriculture, farms must utilize water from nearby water sources, such as aquifers and rivers. These water sources are rechargeable, but commonly water is pumped from these sources at a rate faster than they can replenish, and the water source cannot refill. Incidents like this can cause severe drought, and can even drain entire water sources (Aral Sea).</p>
+                                `
+                            }, 
+                            {
+                                name: "Atmosphere",
+                                media: "Up",
+                                content: `
+                                <p>The <b>atmosphere</b> is the collection of gases that surround Earth, and make up the protecting layer around the planet.</p>
+                                <p>Earth's atmosphere is comprised of different layers, categorized by their distance to Earth's surface.</p>
+                                <ul>
+                                    <li><b>Troposphere</b> : the lowest atmosphereic layer, all weather occurs in this layer (0-12km)</li>
+                                    <li><b>Stratosphere</b> : the layer above the troposphere, this layer contains the ozone layer (12-50km)</li>
+                                    <li><b>Mesosphere</b> : the layer above the stratosphere, not much happens here (50-80km)</li>
+                                    <li><b>Thermosphere</b> : the layer above the mesosphere, about as boring as the mesosphere, air density is incredibly low here (50-440km)</li>
+                                </ul>
+                                <p>Earth's atmosphere is comprised of a large mixture of different atmospheric gases, including Nitrogen, Oxygen, Argon, and Carbon Dioxide.</p>
+                                <p>The atmospheric layer shown on this page is the troposphere, identified by the existance of clouds (weather).</p>
+                                `
+                            }, 
+                        ]
+                    },
+                    {
+                        id: 2,
+                        moniker: "Biotic Factors of the Environment",
+                        content: "",
+                        subcategories: [
+                            {
+                                name: "Biomes",
+                                media: "Nature-Sunset",
+                                content: `
+                                <p><b>Biome</b> : regions with a certain climate, defined by their ecosystems and climate.</p>
+                                <p>The biome shown on this page is a temperate grassland. These typically have warm temperatures in the summer, and cool winters. This biomes has average levels of percipitation year-round.</p>
+                                <h4 class="text-center">Biome types</h4>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>cosystems
+                                            <th></th>
+                                            <th>Cold</th>
+                                            <th>Temperate</th>
+                                            <th>Tropical</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>Desert</b></td>
+                                            <td>Cold Desert</td>
+                                            <td>Temperate Desert</td>
+                                            <td>Tropical Desert</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Grassland</b></td>
+                                            <td>Arctic Tundra</td>
+                                            <td>Temperate Grassland</td>
+                                            <td>Savanna</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Forest</b></td>
+                                            <td>Evergreen Coniferous Forests</td>
+                                            <td>Temperate Deciduous Forest</td>
+                                            <td>Tropical Rainforest</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                `
+                            }, 
+                            {
+                                name: "Biogeochemical Cycles",
+                                media: "Think-Green",
+                                content: `
+                                <p>There are many cycles that keep the worldwide system of natural resources (whether its chemical, biological, or geological) circulating and renewing.</p>
+                                <p>The <b>nitrogen cycle</b> is a cycle in the biosphere which renews and circulates nitrogen through plants, animals, and the atmosphere.</p>
+                                <p>The nitrogen cycle consists of a few steps:</p>
+                                <ul>
+                                    <li>Nitrogen Fixation</li>
+                                    <li>Nitrification</li>
+                                    <li>Assimiliation</li>
+                                    <li>Ammonification</li>
+                                    <li>Denitrification</li>
+                                </ul>
+                                <p>The <b>phosphorous cycle</b> is a cycle that circulates phosphate through geological material, plants, and water.</p>
+                                <p>The <b>sulfur cycle</b> is a cycle that circulates sulfur through minerals, plants, and animals.</p>
+                                `
+                            }, 
+                            {
+                                name: "Biodiversity",
+                                media: "The-King",
+                                content: `
+                                <p><b>Biodiversity</b> is variation of different species.</p>
+                                <p>There are 3 types of biodiversity: <b>species</b>, <b>genetic</b>, and <b>ecosystem</b>.</p>
+                                <p>Biodiversity stems from genetic variation, a difference in genes throughout a region.</p>
+                                <p><b>Evolution</b> is a change in genes in a population over a period of time.</p>
+                                <p>The main mechanisms that facilitate evolution are <b>mutation</b>, <b>migration</b>, <b>genetic drift</b>, and <b>natural selection</b>.</p>
+                                <p>Through evolution, a region can increase it's biodiversity, eventually creating new species.</p>
+                                `
+                            }, 
+                        ]
+                    },
+                    {
+                        id: 3,
+                        moniker: "Population and Energy",
+                        content: "",
+                        subcategories: [
+                            {
+                                name: "Human Population",
+                                media: "Mathura-Bazaar",
+                                content: `
+                                <p>There are over <b>7 billion</b> people on Earth. That's a <b>HUGE</b> amount of people!</p>
+                                <p>The world population is steadily growing, due to a mixture of:</p>
+                                <ul>
+                                    <li>Better health care</li>
+                                    <li>Increased food production</li>
+                                    <li>Increasing poverty</li>
+                                </ul>
+                                <p>Population growth can cause negative effects to a country, as it can wear down the infrastructure (physical and financial) of a country as more and more citizens are born.</p>
+                                <p>However, a working population is necessary for a country to continue producing workers, so countries often aim for a steady population growth rate of around 0 (equal births and deaths).</p>
+                                <p>Countries that have a <b>negative</b> population growth (more deaths than births) may have issues with a smaller workforce, and larger aging population (leading to higher medical costs). Countries in this state will often provide incentives for citizens to have more children through financial and social incentive programs.</p>
+                                `
+                            }, 
+                            {
+                                name: "Nonrenewables",
+                                media: "Boat-Alone",
+                                content: `
+                                <p><b>Nonrenewables</b> : energy sources that cannot be replenished naturally (oil, coal, and natural gas).</p>
+                                <p><b>Fossil fuels</b> : combustible deposits in Earth, composed of the fossils of organisms from millions of years ago.</p>
+                                <p><b>Coal</b> : a black, combustible material made of carbon, formed from the decay of plants over millions of years.</p>
+                                <p><b>Natural Gas</b> : a mixture of gaseous hydrocarbons (methane) formed from ancient material decay.</p>
+                                <p><b>Oil</b> : a thick, yellow/black flammable liquid hydrocarbon formed from the remains of ancient aquatic organisms.</p>
+                                <p>All fossil fuels release CO2 (and other greenhouse gases), which cause global warming.</p>
+                                `
+                            }, 
+                            {
+                                name: "Renewables",
+                                media: "Gaiserr",
+                                content: `
+                                <p><b>Renewables</b> : energy sources that can be replenished or are produced naturally.</p>
+                                <p>There are many types of renewable energy, but the main types are:</p>
+                                <ul>
+                                    <li><b>Wind</b> : generates electricity via turbines powered by wind.</li>
+                                    <li><b>Solar</b> : generates electricity via photovoltaic cells or solar heat.</li>
+                                    <li><b>Hydroelectric</b> : generates electricity via the movement of water.</li>
+                                    <li><b>Geothermal</b> : generates electricity via the heat of the Earth's interior.</li>
+                                </ul>
+                                <p>Renewables often release little/no CO2 as a byproduct of their energy generation, and are much more environmentally sound than fossil fuels.</p>
+                                <p>The energy source shown on this page is an example of <b>Geothermal</b> power capability, as geysers stem from heat from the Earth's interior.</p>
+                                `
+                            }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        moniker: "Pollution",
+                        content: "",
+                        subcategories: [
+                            {
+                                name: "Air Pollution",
+                                media: "Busy-City",
+                                content: `
+                                <p><b>Air pollution</b> is the pollution of the atmosphere.</p>
+                                <p>We pollute the atmosphere by releasing large amounts of gases into it, causing an imbalance in atmospheric gas composition, which can have adverse effects.</p>
+                                <p>The main pollutants of the atmosphere are:</p>
+                                <ul>
+                                    <li>Carbon Monoxide</li>
+                                    <li>NOx</li>
+                                    <li>SOx</li>
+                                    <li>Particulants</li>
+                                    <li>Ozone</li>
+                                </ul>
+                                <p>Each of these pollutants has different negative health effects, and are produced via various sources of pollutions.</p>
+                                <p>There are two types of air pollution sources, <b>point</b> and <b>non-point</b>.</p>                                
+                                <p>Automobiles are one major source of air pollution, as they release multiple of the main pollutants into the atmosphere through exhaust.</p>
+                                `
+                            }, 
+                            {
+                                name: "Hazardous Waste",
+                                media: "Matcha",
+                                content: `
+                                <p><b>Hazardous waste</b> is any discarded solid o rliquid material that is toxic, combustible, corrosive, or reactive enough to cause damage to the environment.</p>
+                                <p>Hazardous waste is typically produced by industrial processes, and brings many challenges when it comes to keeping it contained/cleaned.</p>
+                                <p>The two largest classes of hazardous waste are <b>organic</b> and <b>toxic heavy metals</b>.</p>
+                                `
+                            }, 
+                            {
+                                name: "Environmental Hazard and Risk",
+                                media: "Open-Fire",
+                                content: `
+                                <p><b>Risk and hazard</b> are major parts of any production/process, and are very important in the research and management of pollution.</p>
+                                <p><b>Risk</b> : the probablity that something undesirable will result from deliberate or accidental exposure to a hazard.</p>
+                                <p><b>Hazard</b> : anything that can cause injury, financial loss, disease, or environmental damage.</p>
+                                <p>With <b>risk</b> comes <b>risk management</b>, the systematic reduction of risk. Risk management is a process for reducing and eliminating risks.</p>
+                                <p><b>Risk analysis</b> is the process of identifying hazards, and evaluating the nature and severity of risks.</p>
+                                `
+                            }
+                        ]
+                    },
+                    {
+                        id: 5,
+                        moniker: "Sustainable Land Use",
+                        content: "",
+                        subcategories: [
+                            {
+                                name: "Fishing",
+                                media: "Fish-Tank",
+                                content: `
+                                <p><b>Fishing</b> is a very large part our food production system, and comes with environmental cautions and limitations.</p>
+                                <p>There are many different methods that commerical fishers use to fish on a large scale.</p>
+                                <ul>
+                                    <li><b>Bottom Trawling</b> : towing a net across the sea floors to catch fish near the bottom of the sea bed. This process is incredibly destructive, and catches large amounts of fish.</li>
+                                    <li><b>Drift Nets</b> : leaving nets across the surface of the water to catch large amounts of fish near the top of the water. This process results in a large amount of accidental bycatch (accidental fish caught).</li>
+                                    <li><b>Long Line Fishing</b> : setting up a large line with multiple hooks across the line to catch specific types of fish. This process can be used to catch larger fishes, but can result in bycatch.</li>
+                                </ul>
+                                <p><b>Overfishing</b> is a situation where more fish are caught than can reproduce, and the overall fish population reduces to below acceptable levels.</p>
+                                <p><b>Aquaculture</b> or "fish farming" is the process of raising fish in a controlled environment, as opposed to collecting them from the wild.</p>
+                                `
+                            }, 
+                            {
+                                name: "Agriculture",
+                                media: "Free-Cows",
+                                content: `
+                                <p><b>Agriculture</b> is the systematic growing of plants for food.</p>
+                                `
+                            }, 
+                            {
+                                name: "Environmental Economics",
+                                media: "Indoor-Market",
+                                content: `
+                                <p><b>Economics</b> play a large role in effecting the environment, as it influences the decisions of companies concerning the environment.</p>
+                                <p>There are a 2 different polar economic philosophies that reflect the general economic ideals in relation to the environment.</p>
+                                <ul>
+                                    <li><b>Free-market economy</b> : supply and demand drives the market, without external regulation or limitation.</li>
+                                    <li><b>Ecological and Environmental economy</b> : a market supported by environment regulation to preserve natural resources from exploitation.</li>
+                                </ul>
+                                `
+                            }
+                        ]
+                    }
+                ];
+
+                $scope.playingVideos = true;
+                $scope.defaultMedia = "The-Kayak";
+
+                $scope.activeMedia = $scope.defaultMedia;
+                $scope.activeTab = 0;
+
+                $scope.selectedSubCategory = null;
+
+                $scope.toggleVideos = function () {
+                    if ($scope.playingVideos) {
+                        stopVideos();
+                    } else {
+                        loadVideos();
+                        startVideos();
+                    }
+                    $scope.playingVideos = !$scope.playingVideos;
+                };
+
+                $scope.selectSubCategory = function (category) {
+                    $scope.selectedSubCategory = category;
+                    $scope.activeMedia = $scope.selectedSubCategory.media;
+                    loadVideos();
+                };
+
+                $scope.selectTopic = function (topic) {
+                    if (typeof topic == "number") {
+                        if (topic == 0) {
+                            $scope.activeMedia = $scope.defaultMedia;
+                        } else {
+                            $scope.selectSubCategory($scope.topics[topic].subcategories[0]);
+                        }
+                        $scope.activeTab = topic;
+                    } else {
+                        $scope.activeTab = topic.id;
+                        $scope.selectSubCategory(topic.subcategories[0]);
+                    }
+                    loadVideos();
+                };
+            }]);
+        </script>
+    </head>
+    <body ng-app="apesApp" ng-controller="Controller">
+        <video playsinline autoplay muted loop ng-attr-poster="{{'images/' + activeMedia + '.jpg'}}" id="bgvid">
+            <source ng-src="{{'videos/' + activeMedia + '.webm'}}" type="video/webm">
+            <source ng-src="{{'videos/' + activeMedia + '.mp4'}}" type="video/mp4">
+        </video>
+        <div class="container centered" ng-show="activeTab == 0">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h2 class="panel-title text-center"><a href="http://thelastb.it">Patrick's</a> AP Environmental Science Review Site</h2>
+                </div>
+                <div class="panel-body">
+                    <p class="text-center">Ready to learn some APES? Click on one of the topics below to start learning about the world around you!</p>
+                    <br>
+                    <div class="row-fluid justify-content-center">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2" ng-repeat="topic in topics">
+                            <button ng-click="selectTopic(topic)" class="btn-primary btn-lg" style="height: 100px; width: 100%; padding: 1px;">{{topic.moniker}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" ng-repeat="topic in topics" style="padding: 10px;" ng-show="activeTab == topic.id">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h2 class="text-center">{{topic.moniker}}</h2>
+                        </div>
+                        <p class="text-center" style="padding-left: 4px; padding-right: 4px;">{{topic.content}}</p>
+                        <div class="row">
+                            <div class="col-md-4" ng-repeat="category in topic.subcategories" style="padding-top: 2px;">
+                                <button class="btn btn-primary" style="width: 100%; padding: 8px;" ng-click="selectSubCategory(category)">
+                                    <h4>{{category.name}}</h4>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" ng-repeat="category in topic.subcategories" ng-show="selectedSubCategory == category">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title text-center">{{category.name}}</h3>
+                        </div>
+                        <div class="panel-body" ng-bind-html="category.content">>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary video-button btn-lg" ng-click="toggleVideos()">
+            {{((playingVideos) ? "Disable" : "Enable")}} videos
+        </button>
+        <button class="btn btn-primary back-button btn-lg" ng-show="activeTab != 0" ng-click="selectTopic(0)">
+            Return to home
+        </button>
+    </body>
+</html>
